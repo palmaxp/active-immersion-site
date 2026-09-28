@@ -1,58 +1,124 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import '../styles/site.css';
 import { Content, frontmatter } from '../privacy.md';
+import { AUTHOR, CONTACT, SITE, STORE } from '../i18n/copy';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const title = 'Privacy Policy · Active Immersion';
+const description = 'What the Active Immersion extension reads, stores and sends, and how to delete your data. Updated September 2026.';
+const url = `${SITE}privacy/`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'en', dateModified: '2026-09-27',
+      isPartOf: { '@id': `${SITE}#website` }, about: { '@id': `${SITE}#app` },
+      author: { '@type': 'Person', '@id': `${SITE}#author`, name: AUTHOR.name, url: AUTHOR.github },
+      publisher: { '@type': 'Organization', '@id': `${SITE}#org`, name: 'Active Immersion', url: SITE, logo: `${SITE}icon-128.png` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Active Immersion', item: SITE },
+        { '@type': 'ListItem', position: 2, name: 'Privacy Policy', item: url },
+      ],
+    },
+  ],
+};
 ---
 
-<Layout title="Privacy Policy — Active Immersion">
-  <!-- Ambient Glow -->
-  <div style="position:fixed;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(245,158,11,0.06)0%,transparent 70%);pointer-events:none;z-index:0;"></div>
-  
-  <!-- Navigation -->
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(9,9,11,0.9)0%,transparent 100%);backdrop-filter:blur(8px);">
-    <a href="/active-immersion-site/" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;">
-      <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-weight:900;font-size:18px;font-family:var(--font-display);border-radius:10px;">A</div>
-      <span style="font-size:15px;font-weight:700;letter-spacing:-0.02em;">Active Immersion</span>
-    </a>
-    <a href="/active-immersion-site/" style="font-size:13px;color:var(--text-secondary);text-decoration:none;">← Back to home</a>
-  </nav>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta name="robots" content="index, follow, max-snippet:-1" />
+    <meta name="author" content={AUTHOR.name} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:site_name" content="Active Immersion" />
+    <meta property="og:image" content={`${SITE}og-en.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" href={`${base}icon-32.png`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="bar scrolled">
+      <a class="brand" href={base} aria-label="Active Immersion">
+        <img src={`${base}icon-128.png`} width="28" height="28" alt="" />
+        <span>Active Immersion</span>
+      </a>
+      <nav class="bar-actions">
+        <a class="switch" href={base}>Home</a>
+        <a class="btn btn-sm" href={STORE.chrome}>Install</a>
+      </nav>
+    </header>
 
-  <main style="position:relative;z-index:1;padding-top:100px;">
-    <section style="padding:60px 24px;max-width:680px;margin:0 auto;">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:48px;">
-        <span style="flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border-strong));"></span>
-        <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#f59e0b;">Legal</span>
-        <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border-strong),transparent);"></span>
-      </div>
-      
-      <h1 style="font-family:var(--font-display);font-size:clamp(32px,5vw,48px);font-weight:700;line-height:1.1;letter-spacing:-0.02em;margin-bottom:16px;text-align:center;">Privacy Policy</h1>
-      <p style="text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:64px;">Effective date: {frontmatter.effective}</p>
-
+    <main class="doc wrap">
+      <h1>Privacy Policy</h1>
+      <p class="effective mono">Effective date: <time datetime="2026-09-27">{frontmatter.effective}</time></p>
       <article class="policy">
         <Content />
       </article>
-    </section>
+      <aside class="byline" aria-label="Author">
+        <span class="avatar mono" aria-hidden="true">J</span>
+        <div>
+          <p><a href={AUTHOR.github} rel="author noopener" target="_blank">By João Palma, creator of Active Immersion</a></p>
+          <p class="mono updated"><time datetime="2026-09-27">Updated September 27, 2026 · extension version 2.0.12</time></p>
+        </div>
+      </aside>
+    </main>
 
-    <!-- Footer -->
-    <footer style="padding:40px 24px;text-align:center;border-top:1px solid var(--border);max-width:800px;margin:0 auto;">
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-weight:900;font-size:14px;font-family:var(--font-display);border-radius:8px;">A</div>
-        <span style="font-size:15px;font-weight:700;">Active Immersion</span>
+    <footer class="foot">
+      <div class="wrap foot-grid">
+        <a class="brand" href={base}><img src={`${base}icon-128.png`} width="24" height="24" alt="" /><span>Active Immersion</span></a>
+        <nav>
+          <a href={base}>Home</a>
+          <a href={`mailto:${CONTACT}`}>Contact</a>
+          <a href={STORE.chrome}>Chrome Web Store</a>
+          <a href={STORE.firefox}>Firefox Add-ons</a>
+        </nav>
       </div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Questions? <a href="mailto:palmaxp.jp@gmail.com" style="color:#f59e0b;text-decoration:none;">palmaxp.jp@gmail.com</a></p>
-      <p style="font-size:12px;color:var(--text-muted);opacity:0.6;">Built with science. Designed for immersion.</p>
     </footer>
-  </main>
-</Layout>
+  </body>
+</html>
 
-<style>
-  .policy :global(h2) { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #f59e0b; margin: 48px 0 16px; }
-  .policy :global(p), .policy :global(li) { color: var(--text-secondary); line-height: 1.7; }
-  .policy :global(p) { margin: 0 0 16px; }
-  .policy :global(ul) { padding-left: 20px; margin: 0 0 16px; list-style: disc; }
-  .policy :global(li) { margin: 6px 0; }
-  .policy :global(strong) { color: var(--text-primary, inherit); }
-  .policy :global(a) { color: #f59e0b; text-decoration: none; }
-  .policy :global(table) { width: 100%; border-collapse: collapse; margin: 8px 0 24px; font-size: 14px; display: block; overflow-x: auto; }
-  .policy :global(th), .policy :global(td) { border: 1px solid var(--border-strong); padding: 10px 12px; text-align: left; vertical-align: top; color: var(--text-secondary); line-height: 1.5; }
-  .policy :global(th) { color: inherit; font-weight: 700; background: rgba(245, 158, 11, 0.06); }
+<style is:global>
+  .doc { padding: 72px 0 110px; max-width: 820px; }
+  .doc h1 { font-size: clamp(2.4rem, 5vw, 3.75rem); line-height: 1.02; font-weight: 700; }
+  .effective { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .policy { margin-top: 44px; }
+  .policy h2 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); line-height: 1.15; font-weight: 700; margin: 56px 0 16px; padding-top: 28px; border-top: 1px solid var(--line-soft); }
+  .policy h2:first-of-type { margin-top: 36px; }
+  .policy p, .policy li { color: #3d444d; font-size: 1.05rem; line-height: 1.7; }
+  .policy p { margin: 0 0 16px; max-width: 70ch; }
+  .policy ul { margin: 0 0 16px; padding-left: 22px; }
+  .policy li { margin: 6px 0; }
+  .policy li::marker { color: var(--go); }
+  .policy strong { color: var(--ink); font-weight: 600; }
+  .policy a { color: var(--ink); font-weight: 600; text-decoration-color: var(--amber); text-decoration-thickness: 2px; }
+  .policy code { font-family: var(--mono); font-size: 0.9em; background: var(--gutter); border: 1px solid var(--line-soft); border-radius: 5px; padding: 1px 5px; }
+  .policy table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 12px 0 26px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: block; overflow-x: auto; }
+  .policy th, .policy td { text-align: left; vertical-align: top; padding: 11px 14px; line-height: 1.5; color: #3d444d; border-bottom: 1px solid var(--line-soft); }
+  .policy tr:last-child td { border-bottom: 0; }
+  .policy th { background: var(--gutter); color: var(--ink); font-weight: 600; border-bottom: 1px solid var(--line); }
+  .policy td:first-child { font-weight: 600; color: var(--ink); }
+  .byline { display: flex; gap: 14px; align-items: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line-soft); font-size: 15px; }
+  .byline .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--amber); color: var(--ink); font-weight: 700; }
+  .byline a { font-weight: 600; text-decoration-color: var(--amber); }
+  .byline .updated { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  @media (max-width: 900px) {
+    body { font-size: 16px; }
+    .doc { padding-top: 48px; }
+    .policy table { font-size: 14px; }
+  }
 </style>

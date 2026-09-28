@@ -1,5 +1,6 @@
 ---
-import { COPY, CONTACT, STORE, type Lang } from '../i18n/copy';
+import '../styles/site.css';
+import { AUTHOR, COPY, CONTACT, EF_EPI_BRAZIL, SITE, STORE, type Lang } from '../i18n/copy';
 
 interface Props {
   lang: Lang;
@@ -10,7 +11,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const here = lang === 'pt' ? base : `${base}en/`;
 const other = lang === 'pt' ? `${base}en/` : base;
 const otherLang = lang === 'pt' ? 'en' : 'pt';
-const img = (name: string) => `${base}img/${lang === 'pt' ? 'pt-BR' : 'en'}-${name}.jpg`;
+const img = (name: string, ext = 'jpg') => `${base}img/${lang === 'pt' ? 'pt-BR' : 'en'}-${name}.${ext}`;
 const site = new URL(here, Astro.site ?? 'https://palmaxp.github.io').toString();
 const ogImage = new URL(`${base}${c.meta.og}`, Astro.site ?? 'https://palmaxp.github.io').toString();
 
@@ -32,6 +33,42 @@ const svg = (name: keyof typeof icon, cls = 'i') =>
   `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon[name]}</svg>`;
 const stars = Array.from({ length: 5 }, () => svg('star', 'i star')).join('');
 const how = c.how.blocks;
+const pageUrl = new URL(here, 'https://palmaxp.github.io').toString();
+const rootUrl = new URL(base, 'https://palmaxp.github.io').toString();
+const enUrl = new URL(`${base}en/`, 'https://palmaxp.github.io').toString();
+const stores = [STORE.chrome.split('?')[0], STORE.firefox.split('?')[0]];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', '@id': `${SITE}#website`, url: SITE, name: 'Active Immersion', inLanguage: ['pt-BR', 'en'], publisher: { '@id': `${SITE}#org` } },
+    {
+      '@type': 'Organization', '@id': `${SITE}#org`, name: 'Active Immersion', url: SITE, logo: `${SITE}icon-128.png`, email: CONTACT,
+      founder: { '@id': `${SITE}#author` }, sameAs: stores,
+    },
+    { '@type': 'Person', '@id': `${SITE}#author`, name: AUTHOR.name, url: AUTHOR.github, sameAs: [AUTHOR.github], jobTitle: lang === 'pt' ? 'Criador do Active Immersion' : 'Creator of Active Immersion', worksFor: { '@id': `${SITE}#org` } },
+    {
+      '@type': 'SoftwareApplication', '@id': `${SITE}#app`, name: 'Active Immersion', url: pageUrl, image: ogImage,
+      applicationCategory: 'EducationalApplication', applicationSubCategory: 'Browser extension',
+      operatingSystem: 'Google Chrome, Microsoft Edge, Brave, Mozilla Firefox 140+', softwareVersion: '2.0.12',
+      description: c.meta.description, installUrl: stores[0], downloadUrl: stores, inLanguage: lang === 'pt' ? 'pt-BR' : 'en',
+      author: { '@id': `${SITE}#author` }, publisher: { '@id': `${SITE}#org` },
+      featureList: [how[0].h, how[1].h, how[2].h, c.control.h],
+      offers: [
+        { '@type': 'Offer', price: '19.90', priceCurrency: 'BRL', category: 'subscription', eligibleRegion: { '@type': 'Country', name: 'BR' }, url: stores[0], description: lang === 'pt' ? '7 dias grátis sem cartão, depois R$ 19,90 por mês' : '7-day free trial with no card, then R$ 19.90 per month' },
+        { '@type': 'Offer', price: '4.99', priceCurrency: 'USD', category: 'subscription', url: stores[0], description: lang === 'pt' ? '7 dias grátis sem cartão, depois US$ 4.99 por mês (fora do Brasil)' : '7-day free trial with no card, then US$ 4.99 per month (outside Brazil)' },
+      ],
+    },
+    {
+      '@type': 'WebPage', '@id': `${pageUrl}#webpage`, url: pageUrl, name: c.meta.title, description: c.meta.description,
+      inLanguage: lang === 'pt' ? 'pt-BR' : 'en', isPartOf: { '@id': `${SITE}#website` }, about: { '@id': `${SITE}#app` },
+      author: { '@id': `${SITE}#author` }, dateModified: '2026-09-27',
+    },
+    {
+      '@type': 'FAQPage', '@id': `${pageUrl}#faq`, inLanguage: lang === 'pt' ? 'pt-BR' : 'en',
+      mainEntity: c.faq.items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -43,7 +80,19 @@ const how = c.how.blocks;
     <meta name="description" content={c.meta.description} />
     <link rel="canonical" href={site} />
     <link rel="alternate" hreflang="pt-BR" href={new URL(base, Astro.site ?? 'https://palmaxp.github.io').toString()} />
-    <link rel="alternate" hreflang="en" href={new URL(`${base}en/`, Astro.site ?? 'https://palmaxp.github.io').toString()} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={rootUrl} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="author" content={AUTHOR.name} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:site_name" content="Active Immersion" />
+    <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'pt' ? 'en_US' : 'pt_BR'} />
+    <meta name="twitter:title" content={c.meta.title} />
+    <meta name="twitter:description" content={c.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="apple-touch-icon" href={`${base}icon-128.png`} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={c.meta.title} />
     <meta property="og:description" content={c.meta.description} />
@@ -60,7 +109,9 @@ const how = c.how.blocks;
     </script>
     <script is:inline define:vars={{ lang, here, other, otherLang }}>
       // First visit: follow the browser's language; a choice made with the switch wins after that.
+      // Crawlers and AI agents are never redirected: each language version is indexed at its own URL.
       try {
+        if (/bot|crawl|spider|slurp|google|bing|yandex|baidu|duckduck|facebookexternalhit|embed|preview|lighthouse|gpt|chatgpt|openai|perplexity|claude|anthropic|cohere|bytespider|applebot/i.test(navigator.userAgent)) throw 0;
         const saved = localStorage.getItem('ai-site-lang');
         const langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
         const want = saved || (langs.some((l) => /^pt/i.test(l)) ? 'pt' : 'en');
@@ -85,10 +136,10 @@ const how = c.how.blocks;
     <main>
       <!-- Hero: the headline is a diff -->
       <section class="hero">
-        <h1 class="poster" aria-label={c.hero.ins}>
-          <span class="pline del" data-strike><span class="gut" aria-hidden="true"><b>1</b><i>−</i></span><span class="ptext"><s>{c.hero.del}</s></span></span>
-          <span class="pline ins" data-insert><span class="gut" aria-hidden="true"><b>1</b><i>+</i></span><span class="ptext">{c.hero.ins}</span></span>
-        </h1>
+        <div class="poster">
+          <p class="pline del" data-strike data-gut="1  −" aria-hidden="true"><span class="ptext"><s>{c.hero.del}</s></span></p>
+          <h1 class="pline ins" data-insert data-gut="1  +"><span class="ptext">{c.hero.ins}</span></h1>
+        </div>
 
         <div class="hero-grid">
           <div class="hero-left">
@@ -179,6 +230,7 @@ const how = c.how.blocks;
       <section class="how">
         <div class="wrap">
           <h2>{c.how.h}</h2>
+          <p class="sub answer">{c.how.a}</p>
         </div>
 
         <article class="file">
@@ -228,7 +280,7 @@ const how = c.how.blocks;
               </div></div>
             </div>
           </div>
-          <figure class="shot wrap desk-only"><img src={img('coach')} width="1600" height="1000" loading="lazy" alt={c.how.shots.alt[1]} /></figure>
+          <figure class="shot wrap desk-only"><picture><source type="image/webp" srcset={img('coach', 'webp')} /><img src={img('coach')} width="1600" height="1000" loading="lazy" decoding="async" alt={c.how.shots.alt[1]} /></picture></figure>
         </article>
 
         <article class="file">
@@ -267,22 +319,26 @@ const how = c.how.blocks;
               </div>
             </div>
           </div>
-          <figure class="shot wrap"><picture><source media="(max-width: 900px)" srcset={`${base}img/${lang === 'pt' ? 'pt-BR' : 'en'}-page-lookup-m.jpg`} width="500" height="380" /><img src={img('page-lookup')} width="1600" height="1000" loading="lazy" alt={c.how.shots.alt[0]} /></picture></figure>
+          <figure class="shot wrap"><picture><source media="(max-width: 900px)" type="image/webp" srcset={img('page-lookup-m', 'webp')} width="500" height="380" /><source media="(max-width: 900px)" srcset={img('page-lookup-m')} width="500" height="380" /><source type="image/webp" srcset={img('page-lookup', 'webp')} /><img src={img('page-lookup')} width="1600" height="1000" loading="lazy" decoding="async" alt={c.how.shots.alt[0]} /></picture></figure>
         </article>
       </section>
 
-      <!-- Versus: the usual way, struck out -->
+      <!-- Versus: split diff, as a real table -->
       <section class="versus">
         <div class="wrap">
           <h2>{c.versus.h}</h2>
-          <div class="vs">
-            {c.versus.rows.map((r, i) => (
-              <div class="vs-pair" data-reveal>
-                <p class="row del"><span class="ln mono">{i + 1}</span><span class="mk mono">−</span><span class="code"><s>{r.del}</s></span></p>
-                <p class="row ins"><span class="ln mono">{i + 1}</span><span class="mk mono">+</span><span class="code">{r.ins}</span></p>
-              </div>
-            ))}
-          </div>
+          <p class="sub answer">{c.versus.a} <a class="src" href={EF_EPI_BRAZIL} rel="noopener" target="_blank">{c.versus.source}</a></p>
+          <table class="vs">
+            <thead><tr><th scope="col"><span class="mk mono" aria-hidden="true">−</span>{c.versus.cols[0]}</th><th scope="col"><span class="mk mono" aria-hidden="true">+</span>{c.versus.cols[1]}</th></tr></thead>
+            <tbody>
+              {c.versus.rows.map((r, i) => (
+                <tr class="vs-pair" data-reveal>
+                  <td class="del"><span class="ln mono" aria-hidden="true">{i + 1}</span><s>{r.del}</s></td>
+                  <td class="ins"><span class="ln mono" aria-hidden="true">{i + 1}</span><span class="code">{r.ins}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -298,7 +354,7 @@ const how = c.how.blocks;
               <li><Fragment set:html={svg('keyboard', 'i')} /><span>{c.control.points[2]}</span></li>
             </ul>
           </div>
-          <figure class="popup"><img src={img('popup-break')} width="380" height="620" loading="lazy" alt={c.control.alt} /></figure>
+          <figure class="popup"><picture><source type="image/webp" srcset={img('popup-break', 'webp')} /><img src={img('popup-break')} width="380" height="620" loading="lazy" decoding="async" alt={c.control.alt} /></picture></figure>
         </div>
       </section>
 
@@ -306,6 +362,7 @@ const how = c.how.blocks;
       <section class="proof">
         <div class="wrap">
           <h2>{c.proof.h}</h2>
+          <p class="sub answer">{c.proof.a}</p>
           <div class="thread">
             <div class="thread-head">
               <span class="avatar mono" aria-hidden="true">J</span>
@@ -358,7 +415,10 @@ const how = c.how.blocks;
       <!-- Privacy -->
       <section class="privacy">
         <div class="wrap privacy-grid">
-          <h2><Fragment set:html={svg('shield', 'i lg')} />{c.privacy.h}</h2>
+          <div>
+            <h2><Fragment set:html={svg('shield', 'i lg')} />{c.privacy.h}</h2>
+            <p class="sub answer">{c.privacy.a}</p>
+          </div>
           <ul class="status-checks boxed">
             {c.privacy.points.map((p) => <li><Fragment set:html={svg('check', 'i sm')} /><span>{p}</span><em class="mono">{c.price.tag}</em></li>)}
           </ul>
@@ -383,10 +443,10 @@ const how = c.how.blocks;
 
       <!-- Final close: one more diff -->
       <section class="final">
-        <p class="poster small">
-          <span class="pline del" data-strike><span class="gut" aria-hidden="true"><i>−</i></span><span class="ptext"><s>{c.final.del}</s></span></span>
-          <span class="pline ins" data-insert><span class="gut" aria-hidden="true"><i>+</i></span><span class="ptext">{c.final.ins}</span></span>
-        </p>
+        <div class="poster small">
+          <p class="pline del" data-strike data-gut="−" aria-hidden="true"><span class="ptext"><s>{c.final.del}</s></span></p>
+          <p class="pline ins" data-insert data-gut="+"><span class="ptext">{c.final.ins}</span></p>
+        </div>
         <div class="final-cta">
           <a class="btn btn-lg" href={STORE.chrome} data-cta data-cta-label>
             <span data-label>{c.cta.chrome}</span>
@@ -400,6 +460,14 @@ const how = c.how.blocks;
         </div>
       </section>
     </main>
+
+    <aside class="byline wrap" aria-label={c.byline.by}>
+      <span class="avatar mono" aria-hidden="true">J</span>
+      <div>
+        <p><a href={AUTHOR.github} rel="author noopener" target="_blank">{c.byline.by}</a></p>
+        <p class="mono updated"><time datetime="2026-09-27">{c.byline.updated}</time></p>
+      </div>
+    </aside>
 
     <footer class="foot">
       <div class="wrap foot-grid">
@@ -510,85 +578,17 @@ const how = c.how.blocks;
 </html>
 
 <style is:global>
-  :root {
-    --paper: #ffffff;
-    --gutter: #f6f8fa;
-    --line: #d1d9e0;
-    --line-soft: #e6ebf0;
-    --ink: #1f2328;
-    --muted: #59636e;
-    --del: #b91c28;
-    --del-bg: #ffebe9;
-    --del-hi: #ffcecb;
-    --ins: #116329;
-    --ins-bg: #dafbe1;
-    --ins-hi: #aceebb;
-    --go: #1f883d;
-    --go-hover: #1a7f37;
-    --amber: #f59e0b;
-    --amber-ink: #8a5a00;
-    --amber-bg: #fff8e1;
-    --sans: 'Spline Sans', ui-sans-serif, system-ui, sans-serif;
-    --mono: 'Spline Sans Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    color-scheme: light;
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  [hidden] { display: none !important; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-  ::selection { background: var(--ins-hi); color: var(--ink); }
-  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
-  html { scrollbar-color: #c4ccd4 var(--gutter); }
-  a { color: inherit; text-underline-offset: 3px; }
-  img { max-width: 100%; height: auto; display: block; }
-  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.035em; margin: 0; }
-  h2 { font-size: clamp(2rem, 4.2vw, 3.5rem); line-height: 1.04; font-weight: 700; }
-  h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); line-height: 1.1; font-weight: 700; }
-  p { margin: 0; }
-  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
-  .wrap { width: min(1180px, 100% - 40px); margin-inline: auto; }
-  .sub { color: var(--muted); font-size: 1.1rem; max-width: 62ch; margin-top: 14px; }
-  .i { width: 20px; height: 20px; flex: none; }
-  .i.sm { width: 16px; height: 16px; }
-  .i.lg { width: 34px; height: 34px; }
-  .tag { display: inline-block; font-size: 11px; line-height: 1; padding: 4px 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); vertical-align: middle; letter-spacing: 0; }
-  .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 100; }
-  .skip:focus { left: 8px; }
-
-  /* Buttons: the approve button is the only filled green on the page */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--go); color: #fff; border: 1px solid rgba(31, 35, 40, 0.15); border-radius: 10px; font: 600 15px/1 var(--sans); padding: 11px 16px; text-decoration: none; cursor: pointer; box-shadow: 0 1px 0 rgba(31, 35, 40, 0.1), 0 6px 16px -8px rgba(26, 127, 55, 0.6); transition: background 0.2s, transform 0.2s var(--ease), box-shadow 0.2s; }
-  .btn:hover { background: var(--go-hover); transform: translateY(-1px); box-shadow: 0 1px 0 rgba(31, 35, 40, 0.1), 0 10px 22px -10px rgba(26, 127, 55, 0.7); }
-  .btn:active { transform: translateY(0); }
-  .btn:disabled { background: var(--ins-bg); color: var(--ins); box-shadow: none; cursor: default; transform: none; }
-  .btn small { font: 500 13px/1 var(--sans); opacity: 0.85; padding-left: 10px; border-left: 1px solid rgba(255, 255, 255, 0.35); }
-  .btn-sm { padding: 8px 12px; font-size: 14px; border-radius: 8px; }
-  .btn-lg { font-size: 18px; padding: 16px 20px; border-radius: 12px; width: 100%; }
-  .btn-lg .i:last-child { margin-left: auto; }
-  .ghost { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font: 500 14px var(--sans); color: var(--ink); cursor: pointer; }
-  .ghost:hover { background: var(--gutter); }
-
-  /* Top bar */
-  .bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(20px, calc((100% - 1180px) / 2)); background: rgba(255, 255, 255, 0.92); backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid transparent; transition: border-color 0.3s; }
-  .bar.scrolled { border-bottom-color: var(--line-soft); }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; }
-  .brand img { border-radius: 7px; }
-  .bar-actions { display: flex; align-items: center; gap: 14px; }
-  .switch { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); text-decoration: none; }
-  .switch:hover { color: var(--ink); }
-
   /* Poster diff */
   .hero { padding: clamp(28px, 6vh, 64px) 0 72px; }
   .poster { display: grid; gap: 0; margin: 0 0 clamp(28px, 5vh, 48px); font-weight: 700; font-size: clamp(2.3rem, 5.6vw, 5.25rem); line-height: 1.02; letter-spacing: -0.04em; }
   .pline { display: grid; grid-template-columns: max(20px, calc((100vw - 1180px) / 2)) 1fr; align-items: stretch; padding-right: 20px; }
-  .pline .gut { display: flex; justify-content: flex-end; align-items: flex-start; gap: 14px; padding: 0.24em 16px 0 0; font: 500 clamp(12px, 1vw, 15px)/1 var(--mono); letter-spacing: 0; color: var(--muted); }
-  .pline .gut b { font-weight: 400; opacity: 0.7; }
-  .pline .gut i { font-style: normal; font-weight: 700; font-size: 1.4em; }
+  .pline { margin: 0; font: inherit; letter-spacing: inherit; }
+  .pline::before { content: attr(data-gut); white-space: pre; text-align: right; padding: 0.3em 16px 0 0; font: 700 clamp(13px, 1.1vw, 17px)/1 var(--mono); letter-spacing: 0; }
   .pline .ptext { padding: 0.08em 0 0.12em 0.05em; }
   .pline.del { background: var(--del-bg); color: var(--del); }
-  .pline.del .gut { color: var(--del); }
+
   .pline.ins { background: var(--ins-bg); color: var(--ins); }
-  .pline.ins .gut { color: var(--ins); }
+
   .pline s { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 55%; background-size: 100% 0.07em; }
 
   /* The one motion: strike, then insert */
@@ -737,13 +737,21 @@ const how = c.how.blocks;
 
   /* Versus */
   .versus { padding: 110px 0; background: var(--gutter); border-block: 1px solid var(--line-soft); }
-  .vs { margin-top: 44px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: 0 30px 60px -44px rgba(31, 35, 40, 0.45); }
-  .vs-pair + .vs-pair { border-top: 1px solid var(--line-soft); }
-  .versus .row { font-size: clamp(1.1rem, 1.9vw, 1.5rem); letter-spacing: -0.01em; }
-  html.js-motion .vs-pair .row.del s { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 58%; background-size: 0% 2px; transition: background-size 0.7s var(--ease) 0.1s; }
-  html.js-motion .vs-pair.played .row.del s { background-size: 100% 2px; }
-  html.js-motion .vs-pair .row.ins .code { clip-path: inset(0 100% 0 0); transition: clip-path 0.8s var(--ease) 0.55s; }
-  html.js-motion .vs-pair.played .row.ins .code { clip-path: inset(0); }
+  .vs { width: 100%; margin-top: 40px; border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); box-shadow: 0 30px 60px -44px rgba(31, 35, 40, 0.45); table-layout: fixed; }
+  .vs th { text-align: left; font-size: 14px; font-weight: 600; padding: 12px 16px; background: var(--gutter); border-bottom: 1px solid var(--line); }
+  .vs th .mk { margin-right: 10px; }
+  .vs th:first-child .mk { color: var(--del); }
+  .vs th:last-child .mk { color: var(--ins); }
+  .vs td { vertical-align: top; padding: 14px 16px 14px 0; font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.4; letter-spacing: -0.01em; display: table-cell; }
+  .vs td .ln { display: inline-block; width: 44px; text-align: right; padding-right: 12px; font-size: 12px; color: var(--muted); vertical-align: 3px; }
+  .vs td.del { background: var(--del-bg); color: var(--del); border-right: 1px solid var(--line-soft); }
+  .vs td.ins { background: var(--ins-bg); color: var(--ins); }
+  .vs tr + tr td { border-top: 1px solid rgba(31, 35, 40, 0.06); }
+  .src { font-size: 14px; color: var(--muted); white-space: nowrap; }
+  html.js-motion .vs-pair td.del s { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 58%; background-size: 0% 2px; transition: background-size 0.7s var(--ease) 0.1s; }
+  html.js-motion .vs-pair.played td.del s { background-size: 100% 2px; }
+  html.js-motion .vs-pair td.ins .code { clip-path: inset(0 100% 0 0); transition: clip-path 0.8s var(--ease) 0.55s; }
+  html.js-motion .vs-pair.played td.ins .code { clip-path: inset(0); }
 
   /* Control */
   .control { padding: 110px 0; }
@@ -818,11 +826,11 @@ const how = c.how.blocks;
   .final-cta { width: min(460px, 100% - 40px); margin-inline: auto; text-align: center; }
   .final-cta p { margin-top: 14px; font-size: 13px; color: var(--muted); }
 
-  .foot { border-top: 1px solid var(--line); padding: 28px 0 90px; font-size: 14px; color: var(--muted); }
-  .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center; }
-  .foot nav { display: flex; flex-wrap: wrap; gap: 18px; }
-  .foot a { text-decoration: none; }
-  .foot a:hover { color: var(--ink); text-decoration: underline; }
+  .answer { color: #3d444d; }
+  .answer + .answer { margin-top: 8px; }
+  .byline { display: flex; gap: 14px; align-items: center; padding: 26px 0; border-top: 1px solid var(--line-soft); font-size: 15px; }
+  .byline a { font-weight: 600; text-decoration-color: var(--amber); }
+  .byline .updated { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
   /* Dock and toast */
   .dock { position: fixed; left: 50%; bottom: 16px; z-index: 40; transform: translate(-50%, 140%); transition: transform 0.5s var(--ease); display: flex; }
@@ -838,6 +846,10 @@ const how = c.how.blocks;
     .text-link { grid-column: 1; }
     .reply { margin-left: 20px; }
     .desk-only { display: none; }
+    .vs, .vs tbody, .vs tr, .vs td { display: block; }
+    .vs thead { display: none; }
+    .vs td.del { border-right: 0; }
+    .vs td .ln { width: 34px; }
     .log.compact::before { left: 81px; }
     .log.compact .commit { grid-template-columns: 74px 32px 1fr; }
     .log.compact .time { font-size: 12.5px; }
@@ -849,8 +861,9 @@ const how = c.how.blocks;
     .row { grid-template-columns: 34px 22px 1fr; font-size: 15px; }
     .hunks { min-height: 0; }
     .pline, .final .pline { grid-template-columns: 34px 1fr; }
-    .pline .gut { padding-right: 8px; }
-    .pline .gut b { display: none; }
+    .pline::before { padding-right: 8px; content: attr(data-gut); }
+    .hero .pline.del::before { content: '−'; }
+    .hero .pline.ins::before { content: '+'; }
     .is-mobile .alt-link { display: none; }
     .feed .fi { grid-template-columns: 56px 1fr; }
     .hidden-chip { display: none !important; }

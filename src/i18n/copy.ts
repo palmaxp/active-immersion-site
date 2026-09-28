@@ -11,12 +11,15 @@ export const STORE = {
 };
 
 export const CONTACT = 'palmaxp.jp@gmail.com';
+export const SITE = 'https://palmaxp.github.io/active-immersion-site/';
+export const EF_EPI_BRAZIL = 'https://www.ef.edu/epi/regions/latin-america/brazil/';
+export const AUTHOR = { name: 'João Palma', github: 'https://github.com/palmaxp' };
 
 const pt = {
   meta: {
     title: 'Active Immersion · Aprenda inglês com a internet que você já usa',
     description:
-      'Extensão para Chrome e Firefox que esconde o português enquanto você navega, corrige o que você escreve em inglês e transforma palavras novas em revisões de 10 minutos. 7 dias grátis, sem cartão.',
+      'Extensão para Chrome e Firefox que esconde o português enquanto você navega, corrige o seu inglês e revisa palavras novas. 7 dias grátis, sem cartão.',
     og: 'og-pt.png',
   },
   nav: { install: 'Instalar', switchTo: 'English', switchLabel: 'Read this page in English' },
@@ -36,7 +39,7 @@ const pt = {
     del: 'Aprenda inglês estudando.',
     ins: 'Aprenda inglês com a internet que você já usa.',
     lead:
-      'O Active Immersion esconde o português enquanto você navega, corrige o que você escreve em inglês e transforma palavras novas em revisões rápidas. Uns 10 minutos por dia, sem abrir mais nenhum app.',
+      'O Active Immersion é uma extensão para Chrome e Firefox que esconde o português enquanto você navega, corrige o que você escreve em inglês e transforma palavras novas em revisões rápidas. Uns 10 minutos por dia, sem abrir mais nenhum app.',
     ready: 'Pronto para instalar',
     checks: ['7 dias grátis, com tudo liberado', 'Sem cartão para começar', 'Cancele quando quiser'],
     rating: '5,0 na Chrome Web Store',
@@ -74,8 +77,8 @@ const pt = {
     },
   ],
   day: {
-    h: 'Um dia normal, revisado',
-    p: 'Você não muda a rotina. Ela é que muda de idioma. Veja um dia de exemplo:',
+    h: 'Como é um dia usando o Active Immersion?',
+    p: 'Com o Active Immersion, a rotina continua a mesma e só o idioma muda: o YouTube, o Gmail, a Wikipedia e o ChatGPT que você já usa viram prática de inglês. Veja um dia de exemplo:',
     label: 'dia de exemplo',
     items: [
       { time: '08:10', place: 'YouTube', del: 'Recomendações em português', ins: 'Só vídeos em inglês, sem os dublados automaticamente' },
@@ -86,11 +89,12 @@ const pt = {
     ],
   },
   how: {
-    h: 'Três mudanças que acontecem sozinhas',
+    h: 'Como o Active Immersion funciona?',
+    a: 'O Active Immersion é uma extensão de navegador que faz três coisas automaticamente em qualquer site: esconde o português em três níveis (Nenhum, Parcial e Total), corrige o inglês que você escreve com o Writing Coach e salva palavras novas para revisar com repetição espaçada (algoritmo FSRS).',
     blocks: [
       {
-        h: 'O português sai de cena',
-        p: 'Páginas, vídeos, buscas e redes em português ficam borrados, traduzidos ou somem, conforme o nível que você escolher. Precisa do português num site? Um clique libera.',
+        h: 'Como o Active Immersion esconde o português?',
+        p: 'O Active Immersion detecta o português no próprio navegador e, conforme o nível escolhido, deixa o texto borrado, traduzido ou remove vídeos, resultados e posts, inclusive os vídeos dublados automaticamente no YouTube. Para usar o português num site, um clique no ícone da extensão libera o site.',
         levels: ['Nenhum', 'Parcial', 'Total'],
         levelHelp: [
           'Nada é escondido. Só correção, consulta de palavras e revisões.',
@@ -100,15 +104,15 @@ const pt = {
         hidden: 'português escondido',
       },
       {
-        h: 'Cada mensagem vira uma aula',
-        p: 'Escreva em inglês onde você já escreve: ChatGPT, Gmail, WhatsApp Web, Slack. O Writing Coach dá uma nota, mostra o que corrigir e explica o porquê, em português se você quiser. Nunca lê senhas, formulários, bancos ou sites do governo.',
+        h: 'Como o Writing Coach corrige o meu inglês?',
+        p: 'O Writing Coach do Active Immersion lê as mensagens em inglês que você envia no ChatGPT, Gmail, WhatsApp Web, Slack e outros sites, dá uma nota de 0 a 100, mostra cada correção e explica o porquê, em português se você quiser. O Writing Coach nunca lê senhas, formulários, bancos ou sites do governo.',
         typed: 'Can you send me the report until friday?',
         fixed: 'Can you send me the report by Friday?',
         why: '“Until” fala de duração; para prazo, use “by”.',
       },
       {
-        h: 'Palavras que finalmente ficam',
-        p: 'Clique duas vezes em qualquer palavra em inglês: significado, pronúncia e um cartão salvo com a frase onde você a encontrou. A revisão traz cada palavra de volta pouco antes de você esquecer.',
+        h: 'Como o Active Immersion ajuda a lembrar as palavras?',
+        p: 'No Active Immersion, um clique duplo em qualquer palavra em inglês mostra significado, pronúncia e um exemplo, e salva um cartão com a frase onde você encontrou a palavra. A revisão usa repetição espaçada (FSRS) para trazer cada palavra de volta pouco antes de você esquecer.',
         sentence: 'Most adults struggle with a new language because they only meet it in class.',
         word: 'struggle',
         meaning: 'ter dificuldade, lutar',
@@ -124,7 +128,10 @@ const pt = {
     shots: { alt: ['A extensão mostrando o significado de uma palavra numa página', 'O Writing Coach corrigindo uma mensagem', 'Uma revisão de palavra'] },
   },
   versus: {
-    h: 'O que muda em relação ao jeito de sempre',
+    h: 'Qual é a diferença entre o Active Immersion e um curso ou app de inglês?',
+    a: 'A diferença está em onde a prática acontece: cursos e apps de lição criam um horário separado para estudar, e o Active Immersion transforma o que você já faz no navegador em prática de inglês. Isso pesa no Brasil, que está na faixa de baixa proficiência do EF English Proficiency Index 2025, com 482 pontos.',
+    source: 'Fonte: EF EPI 2025, Brasil',
+    cols: ['Jeito de sempre', 'Com o Active Immersion'],
     rows: [
       { del: 'Estudar em horário marcado, quando der', ins: 'Praticar o dia inteiro, no que você já faz' },
       { del: 'Frases de livro que você nunca vai usar', ins: 'O seu YouTube, os seus e-mails, as suas conversas' },
@@ -134,20 +141,21 @@ const pt = {
     ],
   },
   control: {
-    h: 'Você decide quanto inglês aguenta hoje',
-    p: 'Cansou? Dá para dar uma pausa, mas a extensão faz você respirar antes e pergunta por quanto tempo. A pausa acaba sozinha. Se quiser se comprometer, o modo compromisso trava o nível por alguns dias.',
+    h: 'Dá para pausar o Active Immersion?',
+    p: 'Sim. O Active Immersion permite pausas de 5, 10 ou 15 minutos (ou mais), mas pede alguns segundos de respiração antes e encerra a pausa sozinho. O modo compromisso trava o nível por alguns dias, e liberar o português num site continua sendo um clique.',
     points: ['Liberar o português num site: um clique', 'Pausa com tempo marcado, que volta sozinha', 'Atalho Alt+Shift+I para pausar em qualquer página'],
     alt: 'A tela de pausa da extensão pedindo para respirar antes',
   },
   proof: {
-    h: 'Feito por quem está aprendendo do mesmo jeito',
+    h: 'Quem criou o Active Immersion?',
+    a: 'O Active Immersion foi criado por João Palma, que está aprendendo inglês com a própria extensão.',
     stars: '5,0 na Chrome Web Store',
     who: 'João · criador do Active Immersion',
     note: 'Eu criei o Active Immersion porque estou aprendendo inglês e queria praticar no que eu já faço todo dia, não só em aula. Uso todos os dias, e o meu professor de inglês achou incrível.',
   },
   price: {
-    h: 'Um preço, tudo incluído',
-    p: 'Teste tudo por 7 dias, sem cartão. Se fizer sentido, continue.',
+    h: 'Quanto custa o Active Immersion?',
+    p: 'O Active Immersion custa R$ 19,90 por mês no Brasil e US$ 4.99 por mês nos outros países, depois de 7 dias grátis com tudo liberado e sem cartão. A assinatura é cobrada pelo Stripe e pode ser cancelada quando você quiser.',
     amount: 'R$ 19,90',
     per: '/mês',
     daily: 'menos de R$ 0,67 por dia',
@@ -164,7 +172,8 @@ const pt = {
     ],
   },
   privacy: {
-    h: 'O que é seu continua seu',
+    h: 'O Active Immersion é seguro para os meus dados?',
+    a: 'Sim. O Active Immersion não mostra anúncios, não usa rastreamento e não vende dados; o texto só vai para a IA quando precisa ser corrigido ou traduzido.',
     points: [
       'Sem anúncios, sem rastreamento, sem venda de dados.',
       'O texto só vai para a IA quando precisa ser corrigido ou traduzido.',
@@ -173,15 +182,16 @@ const pt = {
     link: 'Ler a política de privacidade',
   },
   faq: {
-    h: 'Perguntas antes de instalar',
+    h: 'Perguntas frequentes sobre o Active Immersion',
     items: [
-      { q: 'Preciso já saber inglês?', a: 'Ajuda se você entende um pouco (do básico em diante). Você escolhe o seu nível, e as explicações podem vir em português.' },
-      { q: 'Funciona no celular?', a: 'Não. É uma extensão para o computador: Chrome, Edge, Brave, Opera e Firefox.' },
-      { q: 'O que acontece depois dos 7 dias?', a: 'Para continuar, você assina por R$ 19,90 por mês (US$ 4.99 fora do Brasil). Se não assinar, a extensão para, e as suas palavras e o seu progresso ficam guardados.' },
-      { q: 'Preciso de cartão para testar?', a: 'Não. Você cria a conta com o seu e-mail e já usa tudo por 7 dias.' },
-      { q: 'Como eu cancelo?', a: 'Na extensão, em Conta → Gerenciar assinatura, quando quiser.' },
-      { q: 'E se eu precisar do português em algum site?', a: 'Clique no ícone da extensão e libere o site. Leva um segundo.' },
-      { q: 'Minha língua não é o português. Funciona?', a: 'Sim. A extensão funciona com mais de 18 línguas nativas e tem a interface em 19 idiomas.' },
+      { q: 'Preciso já saber inglês para usar o Active Immersion?', a: 'O Active Immersion funciona melhor para quem já entende um pouco de inglês, do nível A2 ao C1. Você escolhe o seu nível na extensão, e as explicações do Writing Coach podem vir em português.' },
+      { q: 'O Active Immersion funciona no celular?', a: 'Não. O Active Immersion é uma extensão para computador: funciona no Chrome, no Edge e no Brave pela Chrome Web Store, e no Firefox a partir da versão 140.' },
+      { q: 'O que acontece depois dos 7 dias grátis?', a: 'Depois dos 7 dias, o Active Immersion pede uma assinatura de R$ 19,90 por mês (US$ 4.99 fora do Brasil). Sem assinatura, a extensão para de funcionar, e as suas palavras e o seu progresso ficam guardados na sua conta.' },
+      { q: 'Preciso de cartão para testar o Active Immersion?', a: 'Não. O teste de 7 dias do Active Immersion começa quando você cria a conta com o seu e-mail, sem cartão.' },
+      { q: 'Quantas correções de IA o Active Immersion faz por dia?', a: 'Durante o teste, o Active Immersion faz até 50 correções e traduções com IA por dia; no plano Pro, até 300 por dia.' },
+      { q: 'Como cancelo a assinatura do Active Immersion?', a: 'Na extensão, em Conta → Gerenciar assinatura, você abre o portal do Stripe e cancela quando quiser.' },
+      { q: 'E se eu precisar do português em algum site?', a: 'Clique no ícone do Active Immersion e permita o português naquele site. O site fica liberado até você mudar de ideia.' },
+      { q: 'O Active Immersion funciona se a minha língua não for o português?', a: 'Sim. O Active Immersion funciona com mais de 18 línguas nativas e tem a interface em 19 idiomas.' },
     ],
   },
   final: {
@@ -190,6 +200,10 @@ const pt = {
     p: '7 dias grátis · sem cartão · cancele quando quiser',
   },
   footer: { privacy: 'Privacidade', contact: 'Contato', rights: 'Active Immersion' },
+  byline: {
+    by: 'Por João Palma, criador do Active Immersion',
+    updated: 'Atualizado em 27 de setembro de 2026 · extensão na versão 2.0.12',
+  },
   mobileBar: 'Funciona no computador',
 };
 
@@ -197,7 +211,7 @@ const en: typeof pt = {
   meta: {
     title: 'Active Immersion · Learn English from the internet you already use',
     description:
-      'A Chrome and Firefox extension that hides your native language while you browse, corrects the English you write and turns new words into 10-minute reviews. 7 days free, no card.',
+      'Chrome and Firefox extension that hides your native language as you browse, corrects your English and reviews new words. 7 days free, no card.',
     og: 'og-en.png',
   },
   nav: { install: 'Install', switchTo: 'Português', switchLabel: 'Ler esta página em português' },
@@ -217,7 +231,7 @@ const en: typeof pt = {
     del: 'Learn English by studying.',
     ins: 'Learn English from the internet you already use.',
     lead:
-      'Active Immersion hides your native language while you browse, corrects the English you write and turns new words into quick reviews. About 10 minutes a day, with no extra app to open.',
+      'Active Immersion is a Chrome and Firefox extension that hides your native language while you browse, corrects the English you write and turns new words into quick reviews. About 10 minutes a day, with no extra app to open.',
     ready: 'Ready to install',
     checks: ['7 days free, everything included', 'No card to start', 'Cancel anytime'],
     rating: '5.0 on the Chrome Web Store',
@@ -255,8 +269,8 @@ const en: typeof pt = {
     },
   ],
   day: {
-    h: 'An ordinary day, revised',
-    p: 'You keep your routine. It just changes language. Here is an example day:',
+    h: 'What is a day with Active Immersion like?',
+    p: 'With Active Immersion, your routine stays the same and only the language changes: the YouTube, Gmail, Wikipedia and ChatGPT you already use become English practice. Here is an example day:',
     label: 'example day',
     items: [
       { time: '08:10', place: 'YouTube', del: 'Recommendations in your language', ins: 'Only English videos, without the auto-dubbed ones' },
@@ -267,11 +281,12 @@ const en: typeof pt = {
     ],
   },
   how: {
-    h: 'Three changes that happen on their own',
+    h: 'How does Active Immersion work?',
+    a: 'Active Immersion is a browser extension that does three things automatically on any site: it hides your native language at three levels (None, Partial and Total), corrects the English you write with the Writing Coach, and saves new words for spaced-repetition review (the FSRS algorithm).',
     blocks: [
       {
-        h: 'Your language gets out of the way',
-        p: 'Pages, videos, searches and feeds in your language get blurred, translated or removed, depending on the level you pick. Need your language on a site? One click allows it.',
+        h: 'How does Active Immersion hide my native language?',
+        p: 'Active Immersion detects your native language inside the browser and, depending on the level you pick, blurs it, translates it or removes videos, results and posts, including YouTube’s auto-dubbed videos. To use your language on a site, one click on the extension icon allows that site.',
         levels: ['None', 'Partial', 'Total'],
         levelHelp: [
           'Nothing is hidden. Just corrections, word lookup and reviews.',
@@ -281,15 +296,15 @@ const en: typeof pt = {
         hidden: 'your language hidden',
       },
       {
-        h: 'Every message becomes a lesson',
-        p: 'Write in English where you already write: ChatGPT, Gmail, WhatsApp Web, Slack. The Writing Coach gives a score, shows what to fix and explains why, in your language if you like. It never reads passwords, forms, banks or government sites.',
+        h: 'How does the Writing Coach correct my English?',
+        p: 'The Active Immersion Writing Coach reads the English messages you send on ChatGPT, Gmail, WhatsApp Web, Slack and other sites, gives a score from 0 to 100, shows each fix and explains why, in your language if you like. The Writing Coach never reads passwords, forms, banks or government sites.',
         typed: 'Can you send me the report until friday?',
         fixed: 'Can you send me the report by Friday?',
         why: '“Until” is about duration; for a deadline, use “by”.',
       },
       {
-        h: 'Words that finally stick',
-        p: 'Double-click any English word: meaning, pronunciation and a card saved with the sentence you found it in. Reviews bring each word back right before you would forget it.',
+        h: 'How does Active Immersion help me remember words?',
+        p: 'In Active Immersion, double-clicking any English word shows its meaning, pronunciation and an example, and saves a card with the sentence you found it in. Reviews use spaced repetition (FSRS) to bring each word back right before you would forget it.',
         sentence: 'Most adults struggle with a new language because they only meet it in class.',
         word: 'struggle',
         meaning: 'to have a hard time with something',
@@ -305,7 +320,10 @@ const en: typeof pt = {
     shots: { alt: ['The extension showing the meaning of a word on a page', 'The Writing Coach correcting a message', 'A word review'] },
   },
   versus: {
-    h: 'What changes compared with the usual way',
+    h: 'How is Active Immersion different from an English course or app?',
+    a: 'The difference is where practice happens: courses and lesson apps create a separate time to study, while Active Immersion turns what you already do in your browser into English practice. For context, Brazil sits in the low-proficiency band of the EF English Proficiency Index 2025, with a score of 482.',
+    source: 'Source: EF EPI 2025, Brazil',
+    cols: ['The usual way', 'With Active Immersion'],
     rows: [
       { del: 'Studying at set times, when you can', ins: 'Practicing all day, in what you already do' },
       { del: 'Textbook sentences you will never use', ins: 'Your YouTube, your email, your conversations' },
@@ -315,20 +333,21 @@ const en: typeof pt = {
     ],
   },
   control: {
-    h: 'You decide how much English you can take today',
-    p: 'Tired? You can take a break, but the extension makes you breathe first and asks for how long. The break ends on its own. Want to commit? Commitment mode locks your level for a few days.',
+    h: 'Can I pause Active Immersion?',
+    p: 'Yes. Active Immersion allows breaks of 5, 10 or 15 minutes (or longer), asks for a few seconds of breathing first and ends the break on its own. Commitment mode locks your level for a few days, and allowing your language on a site is still one click.',
     points: ['Allow your language on a site: one click', 'Timed breaks that end on their own', 'Alt+Shift+I pauses on any page'],
     alt: 'The extension’s break screen asking you to breathe first',
   },
   proof: {
-    h: 'Made by someone learning the same way',
+    h: 'Who made Active Immersion?',
+    a: 'Active Immersion was created by João Palma, who is learning English with Active Immersion.',
     stars: '5.0 on the Chrome Web Store',
     who: 'João · creator of Active Immersion',
     note: 'I built Active Immersion because I’m learning English and wanted to practice in what I already do every day, not only in class. I use it every day, and my English teacher thought it was amazing.',
   },
   price: {
-    h: 'One price, everything included',
-    p: 'Try everything for 7 days, no card. If it works for you, keep going.',
+    h: 'How much does Active Immersion cost?',
+    p: 'Active Immersion costs US$ 4.99 a month (R$ 19,90 in Brazil) after a 7-day free trial with everything included and no card. The subscription is billed through Stripe and can be cancelled anytime.',
     amount: 'US$ 4.99',
     per: '/month',
     daily: 'about 17 cents a day',
@@ -345,7 +364,8 @@ const en: typeof pt = {
     ],
   },
   privacy: {
-    h: 'What is yours stays yours',
+    h: 'Is Active Immersion safe for my data?',
+    a: 'Yes. Active Immersion shows no ads, uses no tracking and sells no data; text goes to AI only when it needs to be corrected or translated.',
     points: [
       'No ads, no tracking, no selling data.',
       'Text goes to AI only when it needs correcting or translating.',
@@ -354,15 +374,16 @@ const en: typeof pt = {
     link: 'Read the privacy policy',
   },
   faq: {
-    h: 'Questions before you install',
+    h: 'Frequently asked questions about Active Immersion',
     items: [
-      { q: 'Do I need to know English already?', a: 'It helps if you understand a little (basic and up). You pick your level, and explanations can come in your language.' },
-      { q: 'Does it work on my phone?', a: 'No. It is an extension for your computer: Chrome, Edge, Brave, Opera and Firefox.' },
-      { q: 'What happens after the 7 days?', a: 'To keep going, you subscribe for US$ 4.99 a month (R$ 19,90 in Brazil). If you don’t, the extension stops, and your words and progress stay saved.' },
-      { q: 'Do I need a card to try it?', a: 'No. Create your account with your email and use everything for 7 days.' },
-      { q: 'How do I cancel?', a: 'In the extension, under Account → Manage subscription, whenever you want.' },
-      { q: 'What if I need my language on a site?', a: 'Click the extension icon and allow the site. It takes a second.' },
-      { q: 'My native language is not Portuguese. Does it work?', a: 'Yes. It works with 18+ native languages and its interface comes in 19 languages.' },
+      { q: 'Do I need to know some English to use Active Immersion?', a: 'Active Immersion works best if you already understand some English, from level A2 to C1. You pick your level in the extension, and Writing Coach explanations can come in your native language.' },
+      { q: 'Does Active Immersion work on my phone?', a: 'No. Active Immersion is a desktop browser extension: it works on Chrome, Edge and Brave through the Chrome Web Store, and on Firefox 140 or newer.' },
+      { q: 'What happens after the 7-day free trial?', a: 'After 7 days, Active Immersion asks for a subscription of US$ 4.99 a month (R$ 19,90 in Brazil). Without one, the extension stops working, and your words and progress stay saved in your account.' },
+      { q: 'Do I need a card to try Active Immersion?', a: 'No. The Active Immersion 7-day trial starts when you create your account with your email, with no card.' },
+      { q: 'How many AI corrections does Active Immersion make per day?', a: 'During the trial, Active Immersion makes up to 50 AI corrections and translations a day; on the Pro plan, up to 300 a day.' },
+      { q: 'How do I cancel my Active Immersion subscription?', a: 'In the extension, under Account → Manage subscription, you open the Stripe portal and cancel whenever you want.' },
+      { q: 'What if I need my native language on a site?', a: 'Click the Active Immersion icon and allow your language on that site. The site stays allowed until you change your mind.' },
+      { q: 'Does Active Immersion work if my native language is not Portuguese?', a: 'Yes. Active Immersion works with 18+ native languages and its interface comes in 19 languages.' },
     ],
   },
   final: {
@@ -371,6 +392,10 @@ const en: typeof pt = {
     p: '7 days free · no card · cancel anytime',
   },
   footer: { privacy: 'Privacy', contact: 'Contact', rights: 'Active Immersion' },
+  byline: {
+    by: 'By João Palma, creator of Active Immersion',
+    updated: 'Updated September 27, 2026 · extension version 2.0.12',
+  },
   mobileBar: 'Works on your computer',
 };
 

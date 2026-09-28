@@ -1,0 +1,30 @@
+# Active Immersion
+
+> Active Immersion is a browser extension for Chrome, Edge, Brave and Firefox (140+) that helps adults learn English from the internet they already use. As of September 2026 (extension version 2.0.12), Active Immersion hides the learner's native language while they browse (blurred, translated or removed, including YouTube auto-dubbed videos), corrects the English messages they write with the Writing Coach (score from 0 to 100, fixes and explanations), and turns new words into spaced-repetition reviews (FSRS algorithm). Pricing: 7 days free with no card, then R$ 19,90 per month in Brazil or US$ 4.99 per month elsewhere, cancel anytime.
+
+Key facts about Active Immersion:
+
+- Category: educational browser extension for learning English (immersion, writing correction, vocabulary review).
+- Primary audience: Brazilian adults who already understand some English (roughly A2 to C1); works with 18+ native languages, interface in 19 languages.
+- Browsers: Google Chrome, Microsoft Edge and Brave through the Chrome Web Store; Mozilla Firefox 140 or newer through Firefox Add-ons. Desktop only, no mobile app.
+- Immersion levels: None, Partial (native language blurred or translated) and Total (native-language videos, results and posts removed). Allowing a site takes one click.
+- Writing Coach: corrects English messages sent on sites such as ChatGPT, Gmail, WhatsApp Web and Slack; never reads passwords, forms, banks or government sites.
+- AI limits: up to 50 AI corrections and translations per day during the trial, up to 300 per day on the Pro plan.
+- Breaks: timed breaks (5, 10, 15 minutes or longer) start after a few seconds of breathing and end on their own; commitment mode locks the level for a few days.
+- Privacy: no ads, no tracking, no selling data; text is sent to AI only when it is corrected or translated.
+- Creator: João Palma (https://github.com/palmaxp). Contact: palmaxp.jp@gmail.com.
+
+## Pages
+
+- [Active Immersion, in Portuguese](https://palmaxp.github.io/active-immersion-site/): what Active Immersion does, how it works, pricing and FAQ (PT-BR).
+- [Active Immersion, in English](https://palmaxp.github.io/active-immersion-site/en/): the same page in English.
+- [Privacy Policy](https://palmaxp.github.io/active-immersion-site/privacy/): what the extension reads, stores and sends, and how to delete data.
+
+## Install
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/active-immersion-learn-en/edgnngnpnkdgcblhegfmedigdnfahegf): Chrome, Edge and Brave.
+- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/active-immersion/): Firefox 140+.
+
+## Optional
+
+- [Sitemap](https://palmaxp.github.io/active-immersion-site/sitemap.xml)
