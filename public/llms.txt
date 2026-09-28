@@ -20,6 +20,11 @@ Key facts about Active Immersion:
 - [Active Immersion, in English](https://palmaxp.github.io/active-immersion-site/en/): the same page in English.
 - [Privacy Policy](https://palmaxp.github.io/active-immersion-site/privacy/): what the extension reads, stores and sends, and how to delete data.
 
+## Guides
+
+- [How to turn off YouTube auto-dubbing](https://palmaxp.github.io/active-immersion-site/en/blog/turn-off-youtube-auto-dubbing/): why auto-dubbing hurts English learners, how to switch back to the original audio on computer, phone and TV, the preferred-languages setting, and how Active Immersion removes auto-dubbed videos from YouTube lists. Also in [Portuguese](https://palmaxp.github.io/active-immersion-site/blog/como-desativar-dublagem-automatica-youtube/), [Spanish](https://palmaxp.github.io/active-immersion-site/es/blog/como-quitar-doblaje-automatico-youtube/), [French](https://palmaxp.github.io/active-immersion-site/fr/blog/desactiver-doublage-automatique-youtube/), [German](https://palmaxp.github.io/active-immersion-site/de/blog/youtube-automatische-synchronisation-deaktivieren/), [Italian](https://palmaxp.github.io/active-immersion-site/it/blog/come-disattivare-doppiaggio-automatico-youtube/) and [Polish](https://palmaxp.github.io/active-immersion-site/pl/blog/jak-wylaczyc-automatyczny-dubbing-youtube/).
+- [Blog index](https://palmaxp.github.io/active-immersion-site/en/blog/) (English) and [Blog](https://palmaxp.github.io/active-immersion-site/blog/) (Portuguese).
+
 ## Install
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/active-immersion-learn-en/edgnngnpnkdgcblhegfmedigdnfahegf): Chrome, Edge and Brave.

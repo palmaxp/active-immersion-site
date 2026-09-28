@@ -1,0 +1,21 @@
+---
+/* Every blog page in every language: /blog/, /es/blog/, /blog/<slug>/, /es/blog/<slug>/ … */
+import type { GetStaticPaths } from 'astro';
+import BlogIndex from '../components/BlogIndex.astro';
+import BlogPost from '../components/BlogPost.astro';
+import { BLOG_LANGS } from '../blog/i18n';
+import { POSTS, blogLangs, blogPath, postPath } from '../blog/posts';
+
+export const getStaticPaths = (() => {
+  const trim = (p: string) => p.replace(/\/$/, '');
+  const index = blogLangs().map((lang) => ({ params: { route: trim(blogPath(lang)) }, props: { lang, post: undefined } }));
+  const posts = POSTS.flatMap((post) =>
+    BLOG_LANGS.filter((l) => post.t[l]).map((lang) => ({ params: { route: trim(postPath(lang, post.t[lang]!)) }, props: { lang, post } })),
+  );
+  return [...index, ...posts];
+}) satisfies GetStaticPaths;
+
+const { lang, post } = Astro.props;
+---
+
+{post ? <BlogPost post={post} lang={lang} /> : <BlogIndex lang={lang} />}

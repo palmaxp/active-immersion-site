@@ -128,6 +128,7 @@ const jsonLd = {
         <span>Active Immersion</span>
       </a>
       <nav class="bar-actions">
+        <a class="switch blog-link" href={`${here}blog/`}>Blog</a>
         <a class="switch" href={other} data-switch={otherLang} hreflang={otherLang === 'pt' ? 'pt-BR' : 'en'} aria-label={c.nav.switchLabel}><Fragment set:html={svg('globe', 'i sm')} /> {c.nav.switchTo}</a>
         <a class="btn btn-sm" href={STORE.chrome} data-cta>{c.nav.install}</a>
       </nav>
@@ -473,6 +474,7 @@ const jsonLd = {
       <div class="wrap foot-grid">
         <a class="brand" href={here}><img src={`${base}icon-128.png`} width="24" height="24" alt="" /><span>{c.footer.rights}</span></a>
         <nav>
+          <a href={`${here}blog/`}>Blog</a>
           <a href={`${base}privacy/`}>{c.footer.privacy}</a>
           <a href={`mailto:${CONTACT}`}>{c.footer.contact}</a>
           <a href={STORE.chrome}>Chrome Web Store</a>

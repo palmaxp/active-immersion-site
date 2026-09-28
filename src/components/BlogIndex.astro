@@ -1,0 +1,80 @@
+---
+/* The list of posts in one language. */
+import BlogShell from './BlogShell.astro';
+import { svg } from './icons';
+import { AUTHOR, SITE } from '../i18n/copy';
+import { HTML_LANG, UI, landingPrefix, type BlogLang } from '../blog/i18n';
+import { POSTS, blogAlternates, blogPath, postPath } from '../blog/posts';
+
+interface Props { lang: BlogLang }
+const { lang } = Astro.props;
+const ui = UI[lang];
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const path = blogPath(lang);
+const url = `${SITE}${path}`;
+const posts = POSTS.filter((p) => p.t[lang]).sort((a, b) => b.published.localeCompare(a.published));
+const date = (d: string) => new Intl.DateTimeFormat(HTML_LANG[lang], { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(d));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Blog',
+      '@id': `${url}#blog`,
+      url,
+      name: `Active Immersion ${ui.blog}`,
+      description: ui.indexDescription,
+      inLanguage: HTML_LANG[lang],
+      publisher: { '@id': `${SITE}#org` },
+      blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.t[lang]!.title, url: `${SITE}${postPath(lang, p.t[lang]!)}`, datePublished: p.published, author: { '@id': `${SITE}#author` } })),
+    },
+    { '@type': 'Person', '@id': `${SITE}#author`, name: AUTHOR.name, url: AUTHOR.github },
+    { '@type': 'Organization', '@id': `${SITE}#org`, name: 'Active Immersion', url: SITE, logo: `${SITE}icon-128.png` },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Active Immersion', item: `${SITE}${landingPrefix(lang)}` },
+        { '@type': 'ListItem', position: 2, name: ui.blog, item: url },
+      ],
+    },
+  ],
+};
+---
+
+<BlogShell lang={lang} title={ui.indexTitle} description={ui.indexDescription} path={path} alternates={blogAlternates()} jsonLd={jsonLd}>
+  <main class="blog wrap">
+    <h1>{ui.indexH1}</h1>
+    <p class="dek">{ui.indexDek}</p>
+    <ol class="list">
+      {posts.map((p) => {
+        const c = p.t[lang]!;
+        return (
+          <li>
+            <a href={`${base}${postPath(lang, c)}`}>
+              <time class="mono" datetime={p.published}>{date(p.published)}</time>
+              <h2>{c.title}</h2>
+              <p>{c.dek}</p>
+              <span class="go">{ui.read}<Fragment set:html={svg('arrow', 'i sm')} /></span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </main>
+</BlogShell>
+
+<style>
+  .blog { max-width: 780px; padding: 56px 0 110px; }
+  h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); line-height: 1; font-weight: 700; }
+  .dek { margin-top: 16px; font-size: 1.2rem; color: #3d444d; max-width: 56ch; }
+  .list { list-style: none; padding: 0; margin: 44px 0 0; border-top: 1px solid var(--line); }
+  .list li { border-bottom: 1px solid var(--line); }
+  .list a { display: block; padding: 28px 0; text-decoration: none; }
+  time { font-size: 13px; color: var(--muted); }
+  h2 { margin-top: 8px; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.1; }
+  .list p { margin-top: 10px; color: #3d444d; max-width: 64ch; }
+  .go { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-weight: 600; font-size: 15px; color: var(--ins); }
+  .list a:hover h2 { text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+  .list a:hover .go .i { transform: translateX(3px); }
+  .go .i { transition: transform 0.2s var(--ease); }
+</style>

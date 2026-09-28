@@ -1,0 +1,247 @@
+---
+/* One blog post: short answer first, then question sections, figures, install box, FAQ and sources. */
+import BlogShell from './BlogShell.astro';
+import BlogFigure from './BlogFigure.astro';
+import { svg } from './icons';
+import { AUTHOR, SITE, STORE } from '../i18n/copy';
+import { HTML_LANG, LANG_NAME, UI, BLOG_LANGS, landingPrefix, type BlogLang } from '../blog/i18n';
+import { blogPath, plainText, postAlternates, postPath } from '../blog/posts';
+import type { Post } from '../blog/types';
+
+interface Props { post: Post; lang: BlogLang }
+const { post, lang } = Astro.props;
+const c = post.t[lang]!;
+const ui = UI[lang];
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const path = postPath(lang, c);
+const url = `${SITE}${path}`;
+const words = plainText(c).split(' ').length;
+const minutes = Math.max(1, Math.round(words / 220));
+const date = (d: string) => new Intl.DateTimeFormat(HTML_LANG[lang], { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(d));
+const others = BLOG_LANGS.filter((l) => l !== lang && post.t[l]);
+const strip = (h: string) => h.replace(/<[^>]+>/g, '');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${url}#article`,
+      headline: c.title,
+      description: c.description,
+      image: `${SITE}og-${lang === 'pt' ? 'pt' : 'en'}.png`,
+      datePublished: post.published,
+      dateModified: post.modified,
+      inLanguage: HTML_LANG[lang],
+      wordCount: words,
+      mainEntityOfPage: url,
+      url,
+      author: { '@id': `${SITE}#author` },
+      publisher: { '@id': `${SITE}#org` },
+      isPartOf: { '@type': 'Blog', '@id': `${SITE}${blogPath(lang)}#blog`, name: `Active Immersion ${ui.blog}` },
+      about: { '@type': 'Thing', name: post.about },
+      mentions: { '@id': `${SITE}#app` },
+      citation: c.sources.map((s) => s.url),
+    },
+    { '@type': 'Person', '@id': `${SITE}#author`, name: AUTHOR.name, url: AUTHOR.github, sameAs: [AUTHOR.github] },
+    { '@type': 'Organization', '@id': `${SITE}#org`, name: 'Active Immersion', url: SITE, logo: `${SITE}icon-128.png` },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${SITE}#app`,
+      name: 'Active Immersion',
+      url: SITE,
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Chrome, Edge, Brave, Firefox 140+',
+      installUrl: STORE.chrome,
+    },
+    {
+      '@type': 'HowTo',
+      '@id': `${url}#howto`,
+      name: c.howTo.name,
+      inLanguage: HTML_LANG[lang],
+      step: c.howTo.steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${url}#faq`,
+      inLanguage: HTML_LANG[lang],
+      mainEntity: c.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Active Immersion', item: `${SITE}${landingPrefix(lang)}` },
+        { '@type': 'ListItem', position: 2, name: ui.blog, item: `${SITE}${blogPath(lang)}` },
+        { '@type': 'ListItem', position: 3, name: c.title, item: url },
+      ],
+    },
+  ],
+};
+---
+
+<BlogShell lang={lang} title={c.metaTitle} description={c.description} path={path} alternates={postAlternates(post)} jsonLd={jsonLd} ogType="article">
+  <main class="post wrap">
+    <article>
+      <nav class="crumbs mono" aria-label="Breadcrumb">
+        <a href={`${base}${landingPrefix(lang)}`}>Active Immersion</a><span aria-hidden="true">/</span><a href={`${base}${blogPath(lang)}`}>{ui.blog}</a>
+      </nav>
+      <h1>{c.title}</h1>
+      <p class="dek">{c.dek}</p>
+      <p class="meta">
+        <a href={AUTHOR.github} rel="author noopener" target="_blank">{AUTHOR.name}</a>
+        <span aria-hidden="true">·</span>
+        <time datetime={post.modified}>{post.modified === post.published ? ui.published : ui.updated} {date(post.modified)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{ui.minutes(minutes)}</span>
+      </p>
+
+      <section class="answer" aria-labelledby="answer-h">
+        <p class="answer-h mono" id="answer-h"><span aria-hidden="true">+</span>{ui.answer}</p>
+        <p set:html={c.answer} />
+      </section>
+
+      <nav class="toc" aria-labelledby="toc-h">
+        <p class="toc-h" id="toc-h">{ui.toc}</p>
+        <ol>
+          {c.sections.map((s) => <li><a href={`#${s.id}`}>{s.h2}</a></li>)}
+          <li><a href="#faq">{ui.faq}</a></li>
+        </ol>
+      </nav>
+
+      {c.sections.map((s) => (
+        <section class="sec" id={s.id} aria-labelledby={`${s.id}-h`}>
+          <h2 id={`${s.id}-h`}>{s.h2}</h2>
+          {s.body.map((p) => <p set:html={p} />)}
+          {s.steps && <ol class="steps">{s.steps.map((st) => <li set:html={st} />)}</ol>}
+          {s.figure && <BlogFigure kind={s.figure} copy={c.fig} note={ui.figNote} />}
+          {s.after?.map((p) => <p set:html={p} />)}
+          {s.cta && (
+            <aside class="merge" aria-label={ui.cta.title}>
+              <div class="merge-head">
+                <span class="ok-dot"><Fragment set:html={svg('check', 'i sm')} /></span>
+                <p>{ui.cta.title}</p>
+              </div>
+              <div class="merge-body">
+                <p>{ui.cta.p}</p>
+                <ul>{ui.cta.checks.map((k) => <li><Fragment set:html={svg('check', 'i sm')} />{k}</li>)}</ul>
+                <a class="btn btn-lg" href={STORE.chrome}>{ui.cta.button}<small>{ui.cta.small}</small><Fragment set:html={svg('arrow')} /></a>
+                <p class="ff">{ui.cta.firefoxQ} <a href={STORE.firefox}>{ui.cta.firefox}</a></p>
+              </div>
+            </aside>
+          )}
+        </section>
+      ))}
+
+      <section class="sec" id="faq" aria-labelledby="faq-h">
+        <h2 id="faq-h">{ui.faq}</h2>
+        <div class="faq">
+          {c.faq.map((f) => (
+            <details>
+              <summary><Fragment set:html={svg('question', 'i sm q')} /><span>{f.q}</span><Fragment set:html={svg('chevron', 'i sm chev')} /></summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="sources" aria-labelledby="src-h">
+        <h2 id="src-h">{ui.sources}</h2>
+        <ol>{c.sources.map((s) => <li><a href={s.url} rel="noopener" target="_blank">{s.label}</a></li>)}</ol>
+      </section>
+
+      <aside class="byline" aria-label={ui.by}>
+        <span class="avatar mono" aria-hidden="true">J</span>
+        <div>
+          <p><a href={AUTHOR.github} rel="author noopener" target="_blank">{ui.by}</a></p>
+          <p class="updated mono"><time datetime={post.published}>{ui.published} {date(post.published)}</time></p>
+        </div>
+      </aside>
+
+      {others.length > 0 && (
+        <nav class="langs" aria-label={ui.readIn}>
+          <span>{ui.readIn}:</span>
+          {others.map((l) => <a href={`${base}${postPath(l, post.t[l]!)}`} hreflang={HTML_LANG[l]} lang={HTML_LANG[l]}>{LANG_NAME[l]}</a>)}
+        </nav>
+      )}
+    </article>
+  </main>
+</BlogShell>
+
+<style is:global>
+  .post { max-width: 780px; padding: 44px 0 100px; }
+  .crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--muted); }
+  .crumbs a { text-decoration: none; }
+  .crumbs a:hover { color: var(--ink); text-decoration: underline; }
+  .post h1 { margin-top: 18px; font-size: clamp(2.3rem, 5.4vw, 3.9rem); line-height: 1.02; font-weight: 700; }
+  .dek { margin-top: 18px; font-size: clamp(1.15rem, 1.8vw, 1.35rem); line-height: 1.5; color: #3d444d; max-width: 60ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; font-size: 14px; color: var(--muted); }
+  .meta a { color: var(--ink); font-weight: 600; text-decoration-color: var(--amber); }
+
+  .answer { margin-top: 34px; background: var(--ins-bg); border: 1px solid var(--ins-hi); border-radius: 14px; padding: 18px 22px 20px; }
+  .answer-h { display: flex; gap: 10px; font-size: 13px; font-weight: 600; color: var(--ins); margin-bottom: 8px; }
+  .answer > p:last-child { font-size: 1.08rem; line-height: 1.65; color: #0f3d1d; }
+
+  .toc { margin-top: 30px; padding: 18px 0 4px; border-top: 1px solid var(--line-soft); }
+  .toc-h { font-weight: 600; font-size: 15px; }
+  .toc ol { margin: 10px 0 0; padding-left: 22px; }
+  .toc li { margin: 6px 0; color: var(--muted); font-size: 15px; }
+  .toc li::marker { font-family: var(--mono); font-size: 13px; }
+  .toc a { text-decoration: none; }
+  .toc a:hover { color: var(--ink); text-decoration: underline; }
+
+  .sec { scroll-margin-top: 80px; }
+  .sec h2 { font-size: clamp(1.55rem, 2.8vw, 2.15rem); line-height: 1.12; margin: 60px 0 16px; }
+  .sec > p { font-size: 1.07rem; line-height: 1.72; color: #3d444d; margin-bottom: 16px; max-width: 70ch; }
+  .sec a:not(.btn) { color: var(--ink); font-weight: 600; text-decoration-color: var(--amber); text-decoration-thickness: 2px; }
+  .sec strong { color: var(--ink); }
+  b.ui { font-weight: 600; color: var(--ink); background: var(--gutter); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0 5px; white-space: nowrap; }
+  .answer b.ui { background: rgba(255, 255, 255, 0.6); border-color: var(--ins-hi); color: #0f3d1d; }
+
+  .steps { list-style: none; counter-reset: st; margin: 6px 0 20px; padding: 0; }
+  .steps li { counter-increment: st; position: relative; padding: 12px 0 12px 44px; border-bottom: 1px solid var(--line-soft); font-size: 1.05rem; line-height: 1.6; color: #3d444d; }
+  .steps li:last-child { border-bottom: 0; }
+  .steps li::before { content: counter(st); position: absolute; left: 0; top: 12px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: #fff; font: 600 13px/1 var(--mono); }
+
+  .merge { margin: 30px 0 10px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px -28px rgba(31, 35, 40, 0.45); }
+  .merge-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--gutter); border-bottom: 1px solid var(--line); font-weight: 600; }
+  .ok-dot { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--go); color: #fff; flex: none; }
+  .merge-body { padding: 18px; }
+  .merge-body > p:first-child { color: #3d444d; }
+  .merge ul { list-style: none; padding: 0; margin: 12px 0 18px; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 15px; }
+  .merge li { display: flex; align-items: center; gap: 6px; }
+  .merge li .i { color: var(--go); }
+  .merge .ff { margin-top: 12px; font-size: 14px; color: var(--muted); }
+  .merge .ff a { color: var(--ink); font-weight: 600; }
+
+  .faq { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .faq details { border-bottom: 1px solid var(--line-soft); }
+  .faq details:last-child { border-bottom: 0; }
+  .faq summary { display: flex; align-items: center; gap: 12px; padding: 16px 18px; cursor: pointer; font-weight: 600; list-style: none; line-height: 1.4; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary span { flex: 1; }
+  .faq summary:hover { background: var(--gutter); }
+  .faq .q { color: var(--amber-ink); }
+  .faq .chev { color: var(--muted); transition: transform 0.25s var(--ease); }
+  .faq details[open] .chev { transform: rotate(180deg); }
+  .faq details p { padding: 0 18px 18px 46px; color: #3d444d; line-height: 1.65; }
+
+  .sources h2 { font-size: 1.2rem; margin: 56px 0 10px; letter-spacing: -0.02em; }
+  .sources ol { margin: 0; padding-left: 22px; font-size: 14.5px; color: var(--muted); }
+  .sources li { margin: 6px 0; }
+  .sources li::marker { font-family: var(--mono); }
+  .sources a { overflow-wrap: anywhere; }
+
+  .byline { display: flex; gap: 14px; align-items: center; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line-soft); font-size: 15px; }
+  .byline .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--amber); color: var(--ink); font-weight: 700; flex: none; }
+  .byline a { font-weight: 600; text-decoration-color: var(--amber); }
+  .byline .updated { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .langs { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 22px; font-size: 14px; color: var(--muted); }
+  .langs a { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .post { padding-top: 28px; }
+    .answer { padding: 16px; }
+    .faq details p { padding-left: 18px; }
+    b.ui { white-space: normal; }
+  }
+</style>
