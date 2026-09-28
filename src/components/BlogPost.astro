@@ -1,11 +1,11 @@
 ---
-/* One blog post: short answer first, then question sections, figures, install box, FAQ and sources. */
+/* One blog post: short answer first, then question sections, figures, tables, install box, FAQ and sources. */
 import BlogShell from './BlogShell.astro';
 import BlogFigure from './BlogFigure.astro';
 import { svg } from './icons';
 import { AUTHOR, SITE, STORE } from '../i18n/copy';
 import { HTML_LANG, LANG_NAME, UI, BLOG_LANGS, landingPrefix, type BlogLang } from '../blog/i18n';
-import { blogPath, plainText, postAlternates, postPath } from '../blog/posts';
+import { POSTS, blogPath, plainText, postAlternates, postPath } from '../blog/posts';
 import type { Post } from '../blog/types';
 
 interface Props { post: Post; lang: BlogLang }
@@ -19,7 +19,10 @@ const words = plainText(c).split(' ').length;
 const minutes = Math.max(1, Math.round(words / 220));
 const date = (d: string) => new Intl.DateTimeFormat(HTML_LANG[lang], { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(d));
 const others = BLOG_LANGS.filter((l) => l !== lang && post.t[l]);
-const strip = (h: string) => h.replace(/<[^>]+>/g, '');
+// Other posts in this language, newest first: internal links between guides.
+// Only the drawings of YouTube's own screens need the "labels may differ" note.
+const YOUTUBE_FIGS = ['badge', 'menu', 'prefs', 'feed'];
+const related = POSTS.filter((p) => p.id !== post.id && p.t[lang]).sort((a, b) => b.published.localeCompare(a.published)).slice(0, 3);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -54,13 +57,17 @@ const jsonLd = {
       operatingSystem: 'Chrome, Edge, Brave, Firefox 140+',
       installUrl: STORE.chrome,
     },
-    {
-      '@type': 'HowTo',
-      '@id': `${url}#howto`,
-      name: c.howTo.name,
-      inLanguage: HTML_LANG[lang],
-      step: c.howTo.steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
-    },
+    ...(c.howTo
+      ? [
+          {
+            '@type': 'HowTo',
+            '@id': `${url}#howto`,
+            name: c.howTo.name,
+            inLanguage: HTML_LANG[lang],
+            step: c.howTo.steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+          },
+        ]
+      : []),
     {
       '@type': 'FAQPage',
       '@id': `${url}#faq`,
@@ -113,7 +120,20 @@ const jsonLd = {
           <h2 id={`${s.id}-h`}>{s.h2}</h2>
           {s.body.map((p) => <p set:html={p} />)}
           {s.steps && <ol class="steps">{s.steps.map((st) => <li set:html={st} />)}</ol>}
-          {s.figure && <BlogFigure kind={s.figure} copy={c.fig} note={ui.figNote} />}
+          {s.table && (
+            <div class="tbl-wrap">
+              <table class="tbl">
+                {s.table.caption && <caption>{s.table.caption}</caption>}
+                <thead><tr>{s.table.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+                <tbody>
+                  {s.table.rows.map((row) => (
+                    <tr>{row.map((cell, i) => (i === 0 ? <th scope="row" set:html={cell} /> : <td set:html={cell} />))}</tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {s.figure && <BlogFigure kind={s.figure} copy={c.fig} note={YOUTUBE_FIGS.includes(s.figure) ? ui.figNote : ''} />}
           {s.after?.map((p) => <p set:html={p} />)}
           {s.cta && (
             <aside class="merge" aria-label={ui.cta.title}>
@@ -156,6 +176,17 @@ const jsonLd = {
           <p class="updated mono"><time datetime={post.published}>{ui.published} {date(post.published)}</time></p>
         </div>
       </aside>
+
+      {related.length > 0 && (
+        <nav class="related" aria-labelledby="rel-h">
+          <h2 id="rel-h">{ui.allPosts}</h2>
+          <ul>
+            {related.map((p) => (
+              <li><a href={`${base}${postPath(lang, p.t[lang]!)}`}>{p.t[lang]!.title}<Fragment set:html={svg('arrow', 'i sm')} /></a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
 
       {others.length > 0 && (
         <nav class="langs" aria-label={ui.readIn}>
@@ -202,6 +233,14 @@ const jsonLd = {
   .steps li:last-child { border-bottom: 0; }
   .steps li::before { content: counter(st); position: absolute; left: 0; top: 12px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: #fff; font: 600 13px/1 var(--mono); }
 
+  .tbl-wrap { margin: 18px 0 24px; border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  .tbl caption { text-align: left; padding: 12px 16px 0; font-size: 13px; color: var(--muted); }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 12px 16px; line-height: 1.5; border-bottom: 1px solid var(--line-soft); color: #3d444d; }
+  .tbl thead th { background: var(--gutter); color: var(--ink); font-weight: 600; border-bottom: 1px solid var(--line); }
+  .tbl tbody th { color: var(--ink); font-weight: 600; }
+  .tbl tr:last-child th, .tbl tr:last-child td { border-bottom: 0; }
+
   .merge { margin: 30px 0 10px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px -28px rgba(31, 35, 40, 0.45); }
   .merge-head { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--gutter); border-bottom: 1px solid var(--line); font-weight: 600; }
   .ok-dot { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--go); color: #fff; flex: none; }
@@ -225,7 +264,7 @@ const jsonLd = {
   .faq details[open] .chev { transform: rotate(180deg); }
   .faq details p { padding: 0 18px 18px 46px; color: #3d444d; line-height: 1.65; }
 
-  .sources h2 { font-size: 1.2rem; margin: 56px 0 10px; letter-spacing: -0.02em; }
+  .sources h2, .related h2 { font-size: 1.2rem; margin: 56px 0 10px; letter-spacing: -0.02em; }
   .sources ol { margin: 0; padding-left: 22px; font-size: 14.5px; color: var(--muted); }
   .sources li { margin: 6px 0; }
   .sources li::marker { font-family: var(--mono); }
@@ -235,6 +274,13 @@ const jsonLd = {
   .byline .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--amber); color: var(--ink); font-weight: 700; flex: none; }
   .byline a { font-weight: 600; text-decoration-color: var(--amber); }
   .byline .updated { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .related ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .related li { border-bottom: 1px solid var(--line); }
+  .related a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 0; font-weight: 600; text-decoration: none; }
+  .related a:hover { text-decoration: underline; text-decoration-color: var(--amber); }
+  .related .i { flex: none; color: var(--ins); }
+
   .langs { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 22px; font-size: 14px; color: var(--muted); }
   .langs a { color: var(--ink); }
 
