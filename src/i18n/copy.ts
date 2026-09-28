@@ -14,6 +14,8 @@ export const CONTACT = 'palmaxp.jp@gmail.com';
 export const SITE = 'https://palmaxp.github.io/active-immersion-site/';
 export const EF_EPI_BRAZIL = 'https://www.ef.edu/epi/regions/latin-america/brazil/';
 export const AUTHOR = { name: 'João Palma', github: 'https://github.com/palmaxp' };
+/** Cloudflare Turnstile site key (public) for the extension's sign-in check; empty = check off. */
+export const TURNSTILE_SITE_KEY = '';
 
 const pt = {
   meta: {

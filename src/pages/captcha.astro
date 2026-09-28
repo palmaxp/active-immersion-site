@@ -1,0 +1,42 @@
+---
+/*
+ * Human check for the extension's sign-in (Cloudflare Turnstile). Extension pages can't load remote
+ * scripts, so they embed this page and receive the one-time token through postMessage.
+ * Without a site key it tells the extension there is no check, and sign-in goes on as before.
+ */
+import { TURNSTILE_SITE_KEY } from '../i18n/copy';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Active Immersion · Human check</title>
+    <style>html, body { margin: 0; background: transparent; } body { display: flex; justify-content: center; }</style>
+    {TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=aiCaptchaReady" async defer></script>}
+  </head>
+  <body>
+    <div id="check"></div>
+    <script is:inline define:vars={{ siteKey: TURNSTILE_SITE_KEY }}>
+      // Only a parent frame (the extension's sign-in form) gets the token; it is single-use and expires.
+      const post = (m) => window.parent !== window && window.parent.postMessage({ __aiCaptcha: true, ...m }, '*');
+      const lang = new URLSearchParams(location.search).get('lang') || 'auto';
+      let widget = null;
+      if (!siteKey) post({ disabled: true });
+      window.aiCaptchaReady = () => {
+        widget = turnstile.render('#check', {
+          sitekey: siteKey,
+          language: lang.toLowerCase(),
+          callback: (token) => post({ token }),
+          'expired-callback': () => post({ token: null }),
+          'error-callback': () => post({ token: null, error: true }),
+        });
+      };
+      window.addEventListener('message', (e) => {
+        if (e.source === window.parent && e.data && e.data.__aiCaptcha === 'reset' && widget !== null) turnstile.reset(widget);
+      });
+    </script>
+  </body>
+</html>
